@@ -3,6 +3,7 @@
 Extension Chrome giúp tìm, nhóm và tải ảnh từ các trang web bạn đang duyệt — miễn là server trả về file ảnh thô qua mạng (JPEG, PNG, WebP, v.v.). Hoạt động tốt với hầu hết các trang web thông thường, kể cả những trang yêu cầu đăng nhập hoặc dùng lazy-loading, nhưng không thể lấy ảnh được giải mã hoàn toàn trong trình duyệt (ví dụ: game WebGL/Unity dùng asset đóng gói sẵn).
 
 Cách sử dụng: https://drive.google.com/file/d/13bz9ucluyaMoF1yUwSSEfSfppfwh1qxJ/view?usp=sharing
+
 ---
 
 ## Tính năng

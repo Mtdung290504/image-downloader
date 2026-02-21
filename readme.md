@@ -3,6 +3,7 @@
 A Chrome extension that finds, groups, and downloads images from webpages you're browsing — as long as the server delivers raw image files over the network (JPEG, PNG, WebP, etc.). It works on most standard websites including those with authentication or lazy-loading, but cannot recover images that are decoded or reconstructed entirely within the browser (e.g. WebGL/Unity-based games with packed assets).
 
 Usage video: https://drive.google.com/file/d/13bz9ucluyaMoF1yUwSSEfSfppfwh1qxJ/view?usp=sharing
+
 ---
 
 ## Features

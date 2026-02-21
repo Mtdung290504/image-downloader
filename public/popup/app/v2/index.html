@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Image Downloader</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+	<!-- Toast container (outside modal so always visible) -->
+	<div id="toast-container"></div>
+
+	<!-- <div id="downloader-modal" class="modal"> -->
+	<div class="modal-content">
+		<!-- Header -->
+		<div class="modal-header">
+			<h1>Image Downloader</h1>
+			<div class="header-meta">
+				<span id="imageCount" class="badge badge-total">0 images</span>
+				<span id="selectedCount" class="badge badge-selected">0 selected</span>
+			</div>
+			<button id="closeBtn" class="close-btn" title="Close">✕</button>
+		</div>
+
+		<!-- Body -->
+		<div class="modal-body">
+
+			<!-- Sticky controls -->
+			<div class="controls">
+				<div class="controls-left">
+					<button id="selectAll" class="btn btn-ghost">Select All</button>
+					<button id="deselectAll" class="btn btn-ghost">Deselect All</button>
+					<button id="selectRange" class="btn btn-ghost">Select Range</button>
+					<button id="applyFilters" class="btn btn-ghost">↺ Refresh</button>
+				</div>
+				<div class="controls-right">
+					<div class="filter-group">
+						<label>W ≥</label>
+						<input type="number" id="minWidth" value="50" min="0" step="50">
+						<label>px &nbsp;&nbsp;|&nbsp;&nbsp; H ≥</label>
+						<input type="number" id="minHeight" value="50" min="0" step="50">
+						<label>px</label>
+					</div>
+				</div>
+			</div>
+
+			<!-- Grid -->
+			<div id="imageGrid" class="images-grid">
+				<!-- Populated by JS -->
+				<div class="state-msg">Loading images…</div>
+			</div>
+
+		</div><!-- /modal-body -->
+
+		<!-- Footer -->
+		<div class="modal-footer">
+			<div class="footer-top">
+				<div id="folderInfo" class="folder-display">No folder selected</div>
+				<button id="selectFolder" class="btn btn-purple">📁 Choose Location</button>
+				<button id="downloadBtn" class="btn btn-green" disabled>⬇ Download</button>
+				<button id="toggleFormatter" class="btn-formatter">⚙ Filename</button>
+			</div>
+
+			<div id="formatterPanel" class="formatter-panel">
+				<div class="formatter-preview ok"
+					style="height: fit-content; margin-bottom: 1em; line-height: 1.5; width: 100%; font-size: 13px; display: block;">
+					You can customize the file naming format for downloaded images here. <br>
+					Use the available tokens to dynamically generate folder structures and file names. <br>
+					Combine tokens with text and use / to create subfolders. <br><br>
+					<b>⚠ Notes:</b>
+					<ul style="margin-left: 25px;">
+						<li>If your format does not include a unique value (such as {index} or {timestamp}), files
+							downloaded later with the same name will overwrite previously downloaded files.</li>
+						<li>If the <strong>Preview</strong> is marked in <span style="color:red">red</span>, downloads
+							will
+							always fail.</li>
+					</ul>
+
+				</div>
+
+				<!-- Template picker -->
+				<div class="formatter-row">
+					<span class="formatter-label">Template:</span>
+					<select id="formatterSelect" class="formatter-select"></select>
+				</div>
+
+				<!-- Pattern editor -->
+				<div class="formatter-row">
+					<span class="formatter-label">Pattern:</span>
+					<input id="formatterEditor" class="formatter-input pattern" type="text" spellcheck="false"
+						placeholder="{timestamp}_{index}_{name}">
+				</div>
+
+				<div class="formatter-hint">
+					Tokens:
+					<ol style="padding-left: 30px;">
+						<li><code>{timestamp}</code>:&nbsp;—The time when the image was downloaded.</li>
+						<li><code>{index}</code>:&nbsp;— The sequential number of the image in the current batch.</li>
+						<li><code>{name}</code>:&nbsp;— The extracted image file name (without extension, if
+							applicable).</li>
+						<li><code>{title}</code>:&nbsp;— The title of the current web page.</li>
+					</ol>
+				</div>
+
+				<!-- Options -->
+				<div class="formatter-row">
+					<span class="formatter-label">Options:</span>
+					<ol style="list-style-type: none;">
+						<li style="margin-bottom: 5px;">
+							<span class="fmt-opt-label">Index digits:&ensp;</span>
+							<input id="formatterPad" class="formatter-input" type="number" value="3" min="1" max="6"
+								style="width:52px;height: fit-content;padding-block: 4px;">
+							&nbsp;— By default, it will automatically adjust to fit the number of photos you select. But
+							you can adjust it as you wish.
+						</li>
+						<li>
+							<span class="fmt-opt-label">Timestamp:&ensp;</span>
+							<select id="formatterTsFormat" class="formatter-select"
+								style="height: fit-content;padding-block: 3px;margin-left: 2px;">
+								<option value="ms">Milliseconds (1748000000000)</option>
+								<option value="datetime">YYYY-MM-DD HH.mm.ss</option>
+								<option value="date">YYYY-MM-DD</option>
+							</select>
+						</li>
+					</ol>
+				</div>
+
+				<!-- Preview -->
+				<div class="formatter-row">
+					<span class="formatter-label">Preview:</span>
+					<div id="formatterPreview" class="formatter-preview ok">—</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- </div> -->
+	</div>
+
+	<!-- Progress overlay -->
+	<div id="progressModal" class="progress-overlay">
+		<div class="progress-box">
+			<h3>Downloading Images…</h3>
+			<div class="progress-track">
+				<div id="progressFill" class="progress-fill"></div>
+			</div>
+			<div id="progressText" class="progress-label">0 / 0</div>
+		</div>
+	</div>
+
+	<!-- <script type="module" src="./app.js"></script> -->
+</body>
+
+</html>

@@ -1,0 +1,41 @@
+{
+	"$schema": "https://www.schemastore.org/chrome-manifest.json",
+	"manifest_version": 3,
+	"name": "Image Downloader",
+	"version": "3.6",
+	"permissions": [
+		"scripting",
+		"debugger",
+		"storage"
+	],
+	"host_permissions": [
+		"<all_urls>"
+	],
+	"web_accessible_resources": [
+		{
+			"resources": [
+				"public/*"
+			],
+			"matches": [
+				"<all_urls>"
+			]
+		}
+	],
+	"background": {
+		"service_worker": "background.js",
+		"type": "module"
+	},
+	"content_scripts": [
+		{
+			"matches": [
+				"<all_urls>"
+			],
+			"js": [
+				"content.js"
+			]
+		}
+	],
+	"action": {
+		"default_popup": "public/popup/popup.html"
+	}
+}

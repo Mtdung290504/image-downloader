@@ -10,6 +10,12 @@ export default class ImageDownloader {
 	constructor() {
 		this.debugger = new DebuggerManager();
 		this.enabled = false;
+
+		/**@private */
+		this._boundOnTabUpdated = this._onTabUpdated.bind(this);
+		/**@private */
+		this._boundOnTabRemoved = this._onTabRemoved.bind(this);
+
 		this._init();
 	}
 
@@ -29,11 +35,10 @@ export default class ImageDownloader {
 				});
 			});
 
+			chrome.tabs.onUpdated.addListener(this._boundOnTabUpdated);
+			chrome.tabs.onRemoved.addListener(this._boundOnTabRemoved);
 			console.log('ImageDownloader initialized');
 		});
-
-		chrome.tabs.onUpdated.addListener(this._onTabUpdated.bind(this));
-		chrome.tabs.onRemoved.addListener(this._onTabRemoved.bind(this));
 	}
 
 	/**
@@ -169,9 +174,13 @@ export default class ImageDownloader {
 
 		if (!enabled) {
 			for (const [tabId] of this.debugger.activeDebuggers) await this.debugger.detach(tabId);
+
 			this.debugger.imageCache.clear();
 			this.debugger.networkImages.clear();
 			this.debugger.pendingRequests.clear();
+
+			chrome.tabs.onUpdated.removeListener(this._boundOnTabUpdated);
+			chrome.tabs.onRemoved.removeListener(this._boundOnTabRemoved);
 			console.log('Extension disabled');
 		} else {
 			chrome.tabs.query({}, (tabs) => {
@@ -179,6 +188,9 @@ export default class ImageDownloader {
 					if (tab.id && tab.url && !tab.url.startsWith('chrome://')) this.debugger.attach(tab.id);
 				});
 			});
+
+			chrome.tabs.onUpdated.addListener(this._boundOnTabUpdated);
+			chrome.tabs.onRemoved.addListener(this._boundOnTabRemoved);
 			console.log('Extension enabled');
 		}
 	}

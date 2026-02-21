@@ -242,11 +242,14 @@ const { viewBinding: appBinding } = createViewBinding({
 // ─── ImageDownloaderApp ─────────────────────────────────────────────────────
 
 export class ImageDownloaderApp {
-	/** @param {Document | ShadowRoot} doc @param {() => void} hide */
+	/**
+	 * @param {Document | ShadowRoot} doc
+	 * @param {() => void} hide
+	 */
 	constructor(doc, hide) {
-		this.hide = hide;
-		this._views = appBinding.bind(doc);
 		this.doc = doc;
+		this._views = appBinding.bind(doc);
+		this._views.closeBtn.addEventListener('click', hide);
 
 		/** @type {import('../../../../background_modules/DebuggerManager.js').ImageResult[]} */
 		this.allImages = [];
@@ -273,12 +276,17 @@ export class ImageDownloaderApp {
 	 * @private
 	 */
 	async _init() {
+		const extensionEnabled = await chrome.runtime.sendMessage(message('get-active-state'));
+		if (!extensionEnabled)
+			return (this._views.imageGrid.innerHTML = '<div class="state-msg error">The extension is disabled</div>');
+
 		try {
 			const r = await chrome.runtime.sendMessage(message('get-current-tab'));
 			this.tabId = r?.tabId;
 		} catch (e) {
 			console.error('Failed to get tab ID:', e);
 		}
+
 		this._attachStaticListeners();
 		await this.loadImages();
 	}
@@ -287,10 +295,8 @@ export class ImageDownloaderApp {
 	 * @private
 	 */
 	_attachStaticListeners() {
-		const { closeBtn, applyFilters, selectAll, deselectAll, selectRange, selectFolder, downloadBtn, imageGrid } =
-			this._views;
+		const { applyFilters, selectAll, deselectAll, selectRange, selectFolder, downloadBtn, imageGrid } = this._views;
 
-		closeBtn.addEventListener('click', this.hide);
 		applyFilters.addEventListener('click', () => this.loadImages());
 		selectAll.addEventListener('click', () => this.selectAll());
 		deselectAll.addEventListener('click', () => this.deselectAll());

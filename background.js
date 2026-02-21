@@ -25,6 +25,13 @@ chrome.runtime.onMessage.addListener(
 				response({ success: false, error: String(err) });
 			}
 		})
+		.on('get-active-state', async (_, __, response) => {
+			response(
+				await new Promise((resolve) => {
+					chrome.storage.local.get(['extensionEnabled'], (result) => resolve(result.extensionEnabled !== false));
+				}),
+			);
+		})
 		.on('get-current-tab', (_data, sender, response) => {
 			response({ tabId: sender.tab?.id });
 		})

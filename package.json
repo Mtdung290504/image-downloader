@@ -1,5 +1,8 @@
 {
   "devDependencies": {
     "@types/chrome": "^0.1.36"
+  },
+  "dependencies": {
+    "devtools-protocol": "^0.0.1634055"
   }
 }

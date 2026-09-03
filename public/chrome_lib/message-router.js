@@ -42,8 +42,8 @@ class MessageListener {
 		return (message, sender, sendResponse) => {
 			const handler = this._handlers.get(message.route);
 			if (!handler) return false;
-
 			handler(message.data, sender, sendResponse);
+
 			return asyncResponse;
 		};
 	}

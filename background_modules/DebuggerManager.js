@@ -164,7 +164,11 @@ export default class DebuggerManager {
 	async _fetchAndCacheBody(pending, requestId) {
 		const { debuggeeId, url, mimeType, tabId, responseTime } = pending;
 		try {
-			const res = await chrome.debugger.sendCommand(debuggeeId, 'Network.getResponseBody', { requestId });
+			const res =
+				/**
+				 * @type {import('devtools-protocol').Protocol.Network.GetResponseBodyResponse | undefined}
+				 */
+				await chrome.debugger.sendCommand(debuggeeId, 'Network.getResponseBody', { requestId });
 			if (!res) return console.warn('No response', { requestId, url, tabId, responseTime });
 
 			if (

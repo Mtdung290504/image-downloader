@@ -3,28 +3,6 @@ import { message } from '../../../chrome_lib/message-router.js';
 import { sleep } from '../../../utils.js';
 import { createViewBinding } from '../@usable_lib/view_binding/index.js';
 
-/**
- * @param {string} msg
- * @param {string} type
- * @param {Document | ShadowRoot | Element} root
- */
-function showToast(msg, type = 'info', root) {
-	const container = root.querySelector('#toast-container');
-	if (!container) return;
-	const toast = document.createElement('div');
-	toast.className = `toast ${type}`;
-	toast.textContent = msg;
-	container.appendChild(toast);
-	const dismiss = () => {
-		toast.style.animation = 'toastIn .25s ease-out reverse';
-		setTimeout(() => toast.parentNode?.removeChild(toast), 260);
-	};
-	setTimeout(dismiss, 3000);
-	toast.addEventListener('click', dismiss);
-}
-
-// ─── FilenameFormatter ──────────────────────────────────────────────────────
-
 const TEMPLATES = [
 	{ id: 'timestamp-folder', label: 'Timestamp folder per batch (default)', pattern: '{timestamp}/{index}-{name}' },
 	{
@@ -218,8 +196,7 @@ class FilenameFormatter {
 	}
 }
 
-// ─── App view binding ────────────────────────────────────────────────────────
-
+// App view binding
 const { viewBinding: appBinding } = createViewBinding({
 	closeBtn: '#closeBtn = button',
 	applyFilters: '#applyFilters = button',
@@ -238,8 +215,6 @@ const { viewBinding: appBinding } = createViewBinding({
 	minWidth: '#minWidth = input',
 	minHeight: '#minHeight = input',
 });
-
-// ─── ImageDownloaderApp ─────────────────────────────────────────────────────
 
 export class ImageDownloaderApp {
 	/**
@@ -576,7 +551,7 @@ export class ImageDownloaderApp {
 				console.error('Failed: ' + img.src, e);
 				fail++;
 			}
-			await sleep(60);
+			// await sleep(60);
 		}
 
 		progressModal.classList.remove('show');
@@ -625,4 +600,24 @@ export class ImageDownloaderApp {
 		await wr.write(blob);
 		await wr.close();
 	}
+}
+
+/**
+ * @param {string} msg
+ * @param {string} type
+ * @param {Document | ShadowRoot | Element} root
+ */
+function showToast(msg, type = 'info', root) {
+	const container = root.querySelector('#toast-container');
+	if (!container) return;
+	const toast = document.createElement('div');
+	toast.className = `toast ${type}`;
+	toast.textContent = msg;
+	container.appendChild(toast);
+	const dismiss = () => {
+		toast.style.animation = 'toastIn .25s ease-out reverse';
+		setTimeout(() => toast.parentNode?.removeChild(toast), 260);
+	};
+	setTimeout(dismiss, 3000);
+	toast.addEventListener('click', dismiss);
 }

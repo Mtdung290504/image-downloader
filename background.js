@@ -25,7 +25,7 @@ chrome.runtime.onMessage.addListener(
 				response({ success: false, error: String(err) });
 			}
 		})
-		.on('get-active-state', async (_, __, response) => {
+		.on('get-active-state', async (_data, _sender, response) => {
 			response(
 				await new Promise((resolve) => {
 					chrome.storage.local.get(['extensionEnabled'], (result) => resolve(result.extensionEnabled !== false));

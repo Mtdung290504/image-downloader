@@ -2,23 +2,13 @@
 	"$schema": "https://www.schemastore.org/chrome-manifest.json",
 	"manifest_version": 3,
 	"name": "Image Downloader",
-	"version": "3.6",
-	"permissions": [
-		"scripting",
-		"debugger",
-		"storage"
-	],
-	"host_permissions": [
-		"<all_urls>"
-	],
+	"version": "3.7",
+	"permissions": ["scripting", "debugger", "storage"],
+	"host_permissions": ["<all_urls>"],
 	"web_accessible_resources": [
 		{
-			"resources": [
-				"public/*"
-			],
-			"matches": [
-				"<all_urls>"
-			]
+			"resources": ["public/*"],
+			"matches": ["<all_urls>"]
 		}
 	],
 	"background": {
@@ -27,12 +17,8 @@
 	},
 	"content_scripts": [
 		{
-			"matches": [
-				"<all_urls>"
-			],
-			"js": [
-				"content.js"
-			]
+			"matches": ["<all_urls>"],
+			"js": ["content.js"]
 		}
 	],
 	"action": {

@@ -1,7 +1,8 @@
 // @ts-check
 import { message } from '../../../chrome_lib/message-router.js';
-import { sleep } from '../../../utils.js';
+// import { sleep } from '../../../utils.js';
 import { createViewBinding } from '../@usable_lib/view_binding/index.js';
+import { getSavedDirectoryHandle, saveDirectoryHandle, verifyPermission } from './folderStorage.js';
 
 const TEMPLATES = [
 	{ id: 'timestamp-folder', label: 'Timestamp folder per batch (default)', pattern: '{timestamp}/{index}-{name}' },
@@ -262,6 +263,19 @@ export class ImageDownloaderApp {
 			console.error('Failed to get tab ID:', e);
 		}
 
+		// Khôi phục thư mục đã lưu trong IndexedDB (nếu có)
+		try {
+			const savedHandle = await getSavedDirectoryHandle();
+			if (savedHandle) {
+				this.directoryHandle = savedHandle;
+				const { folderInfo } = this._views;
+				folderInfo.textContent = '\ud83d\udcc1 ' + savedHandle.name;
+				folderInfo.classList.add('active');
+			}
+		} catch (e) {
+			console.warn('Failed to restore directory handle from IndexedDB:', e);
+		}
+
 		this._attachStaticListeners();
 		await this.loadImages();
 	}
@@ -519,6 +533,9 @@ export class ImageDownloaderApp {
 			this.directoryHandle = await window.showDirectoryPicker({ mode: 'readwrite', startIn: 'downloads' });
 			if (!this.directoryHandle) return;
 
+			// Lưu handle vào IndexedDB để lần sau không cần chọn lại
+			await saveDirectoryHandle(this.directoryHandle);
+
 			const { folderInfo } = this._views;
 			folderInfo.textContent = '\ud83d\udcc1 ' + this.directoryHandle.name;
 			folderInfo.classList.add('active');
@@ -531,6 +548,13 @@ export class ImageDownloaderApp {
 
 	async downloadSelected() {
 		if (!this.directoryHandle || this.selectedImages.size === 0) return;
+
+		// Kiểm tra và kích hoạt lại quyền ghi nếu cần
+		const hasPermission = await verifyPermission(this.directoryHandle, true);
+		if (!hasPermission) {
+			showToast('Please grant write permission to download images', 'error', this.doc);
+			return;
+		}
 
 		const now = Date.now();
 		const indexes = Array.from(this.selectedImages);
